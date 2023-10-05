@@ -1,0 +1,43 @@
+.nav__list {
+  display: flex;
+  justify-content: space-between;
+
+  .tab__item {
+    width: 100%;
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: 2px solid;
+    border-color: gainsboro;
+
+    &--active {
+      border-color: black;
+    }
+  }
+}
+.information {
+  display: grid;
+  gap: 25px;
+  .information__title {
+    font-size: 20px;
+  }
+  .information__description {
+    color: var(--85, #363636);
+    font-family: 'PT Root UI';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%; /* 21px */
+  }
+
+  .information__button {
+    text-decoration: none;
+    text-align: center;
+    color: white;
+    width: 100%;
+    padding: 16px;
+    gap: 8px;
+
+    border-radius: 10px;
+    background: #f46f17;
+  }
+}
