@@ -1,110 +1,86 @@
-export class Todo {
-  static #list = []
-  static #count = []
-  static #block = null
-  static #template = null
-  static #input = null
-  static #button = null
+class Slider {
+  static #content = null
+  static #left = null
+  static #right = null
 
-  static #createTaskDate = (text) => {
-    this.#list.push({
-      id: ++this.#count,
-      text,
-      done: false,
-    })
-  }
+  static #count = 1
+  static #max = null
 
   static init = () => {
-    this.#template =
-      document.getElementById(
-        'task',
-      ).content.firstElementChild
-
-    this.#block = document.querySelector('.task__list')
-    this.#input = document.querySelector('.form__input')
-    this.#button = document.querySelector('.form__button')
-
-    this.#button.onclick = this.#handlerAdd
-    this.#render()
-  }
-
-  static #handlerAdd = () => {
-    if (this.#input.value.length === 0) return
-    this.#createTaskDate(this.#input.value)
-    this.#input.value = ''
-    this.#render()
-  }
-  static #render = () => {
-    this.#block.innerHTML = ''
-
-    if (this.#list.length === 0) {
-      this.#block.innerText = 'Список задач пустий'
-    } else {
-      this.#list.forEach((taskData) => {
-        const el = this.#createTaskElem(taskData)
-        this.#block.append(el)
-      })
-    }
-    this.#saveDate()
-  }
-
-  static #createTaskElem = (data) => {
-    const el = this.#template.cloneNode(true)
-
-    const [id, text, btnDo, btnCancel] = el.children
-
-    id.innerText = `${data.id}.`
-    text.innerText = data.text
-
-    btnDo.onclick = this.#handleDo(data, btnDo, el)
-    btnCancel.onclick = this.#handlerCancel(data)
-
-    return el
-  }
-
-  static #handlerCancel = (data) => () => {
-    const result = this.#deleteById(data.id)
-    if (result) this.#render()
-  }
-  static #deleteById = (id) => {
-    this.#list = this.#list.filter((v) => v.id !== id)
-    return true
-  }
-
-  static #handleDo = (data, btn, el) => () => {
-    const result = this.#toggleDone(data.id)
-    console.log(result)
-    if (result === true || result === false) {
-      console.log(result)
-      console.log(btn)
-      console.log(el)
-      el.classList.toggle('task--done')
-      btn.classList.toggle('task__button--do')
-      btn.classList.toggle('task__button--done')
-    }
-  }
-  static #toggleDone = (id) => {
-    const task = this.#list.find((item) => item.id === id)
-    if (task) {
-      task.done = !task.done
-      return task.done
-    } else {
-      return null
-    }
-  }
-
-  static #NAME = 'todo'
-  static #saveDate = () => {
-    localStorage.setItem(
-      this.#NAME,
-      JSON.stringify({
-        list: this.#list,
-        count: this.#count,
-      }),
+    this.#content = document.querySelector(
+      '.slider__content',
     )
+    this.#left = document.querySelector(
+      '.slider__button--left',
+    )
+    this.#right = document.querySelector(
+      '.slider__button--right',
+    )
+    this.#max = this.#content.childElementCount
+
+    this.#left.onclick = () => this.#slide('left')
+    this.#right.onclick = () => this.#slide('right')
+  }
+  static #slide = (side) => {
+    const offsetWidth = this.#content.offsetWidth
+
+    let scroll = 0
+
+    if (side === 'left') {
+      this.#count =
+        this.#count === 1
+          ? (this.#count = this.#max)
+          : this.#count - 1
+      scroll = (this.#count - 1) * offsetWidth
+    }
+
+    if (side === 'right') {
+      this.#count =
+        this.#count === this.#max ? 0 : this.#count + 1
+      scroll = (this.#count - 1) * offsetWidth
+    }
+    this.#content.scrollTo({
+      top: 0,
+      left: scroll,
+      behavior: 'smooth',
+    })
   }
 }
 
-Todo.init()
+Slider.init()
 
-window.todo = Todo
+class Header {
+  static #height = null
+  static #wrapper = null
+  static #button = null
+  static #isOpen = false
+  static init() {
+    this.#height = document.querySelector(
+      '.header__bottom',
+    ).offsetHeight
+    this.#wrapper = document.querySelector(
+      '.header__wrapper',
+    )
+    this.#button = document.querySelector('.header__button')
+
+    this.#button.onclick = this.#toggle
+  }
+  static #toggle = () => {
+    if (this.#isOpen) {
+      this.#button.classList.replace(
+        'header__button--close',
+        'header__button--open',
+      )
+      this.#wrapper.style.height = 0
+    } else {
+      this.#button.classList.replace(
+        'header__button--open',
+        'header__button--close',
+      )
+      this.#wrapper.style.height = `${this.#height}px`
+    }
+    this.#isOpen = !this.#isOpen
+  }
+}
+
+Header.init()
