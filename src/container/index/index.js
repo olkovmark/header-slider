@@ -1,84 +1,110 @@
-import {
-  createElement,
-  createHeader,
-} from '../../scripts/layout'
+export class Todo {
+  static #list = []
+  static #count = []
+  static #block = null
+  static #template = null
+  static #input = null
+  static #button = null
 
-const page = document.querySelector('.page')
-
-const title = createElement('h1', 'title', 'Мій блог')
-page.append(title)
-
-const header = createHeader('h1', 'title')
-page.append(header)
-
-const POST_LIST = [
-  {
-    category: [
-      { text: 'Важливо', id: 1 },
-      { text: 'Нова', id: 2 },
-    ],
-    info: `До біса планувальник, наймаємо
-        дизайнера і готуємося до презентації, як Джобс`,
-    date: '25.01',
-    viewed: false,
-  },
-  {
-    category: [{ text: 'Нова', id: 2 }],
-    info: `Ми хотіли щоб у цьому чаті було
-        близько 150 людей щоб зробити якісний пак
-        само-презентацій.`,
-    date: '24.01',
-    viewed: true,
-  },
-]
-
-const createPost = () => {
-  const postList = createElement('main', 'post__list')
-  POST_LIST.forEach((postData) => {
-    const post = createElement(
-      'div',
-      postData.viewed
-        ? 'post button post--viewed'
-        : 'post button',
-    )
-
-    const postHeader = createElement('div', 'post__header')
-
-    const categoryList = createElement(
-      'div',
-      'post__category-list',
-    )
-
-    postData.category.forEach((category) => {
-      const categorySpan = createElement(
-        'span',
-        `post__category post__category--${category.id}`,
-        category.text,
-      )
-      categoryList.append(categorySpan)
+  static #createTaskDate = (text) => {
+    this.#list.push({
+      id: ++this.#count,
+      text,
+      done: false,
     })
+  }
 
-    const dateSpan = createElement(
-      'span',
-      'post__date',
-      postData.date,
+  static init = () => {
+    this.#template =
+      document.getElementById(
+        'task',
+      ).content.firstElementChild
+
+    this.#block = document.querySelector('.task__list')
+    this.#input = document.querySelector('.form__input')
+    this.#button = document.querySelector('.form__button')
+
+    this.#button.onclick = this.#handlerAdd
+    this.#render()
+  }
+
+  static #handlerAdd = () => {
+    if (this.#input.value.length === 0) return
+    this.#createTaskDate(this.#input.value)
+    this.#input.value = ''
+    this.#render()
+  }
+  static #render = () => {
+    this.#block.innerHTML = ''
+
+    if (this.#list.length === 0) {
+      this.#block.innerText = 'Список задач пустий'
+    } else {
+      this.#list.forEach((taskData) => {
+        const el = this.#createTaskElem(taskData)
+        this.#block.append(el)
+      })
+    }
+    this.#saveDate()
+  }
+
+  static #createTaskElem = (data) => {
+    const el = this.#template.cloneNode(true)
+
+    const [id, text, btnDo, btnCancel] = el.children
+
+    id.innerText = `${data.id}.`
+    text.innerText = data.text
+
+    btnDo.onclick = this.#handleDo(data, btnDo, el)
+    btnCancel.onclick = this.#handlerCancel(data)
+
+    return el
+  }
+
+  static #handlerCancel = (data) => () => {
+    const result = this.#deleteById(data.id)
+    if (result) this.#render()
+  }
+  static #deleteById = (id) => {
+    this.#list = this.#list.filter((v) => v.id !== id)
+    return true
+  }
+
+  static #handleDo = (data, btn, el) => () => {
+    const result = this.#toggleDone(data.id)
+    console.log(result)
+    if (result === true || result === false) {
+      console.log(result)
+      console.log(btn)
+      console.log(el)
+      el.classList.toggle('task--done')
+      btn.classList.toggle('task__button--do')
+      btn.classList.toggle('task__button--done')
+    }
+  }
+  static #toggleDone = (id) => {
+    const task = this.#list.find((item) => item.id === id)
+    if (task) {
+      task.done = !task.done
+      return task.done
+    } else {
+      return null
+    }
+  }
+
+  static #NAME = 'todo'
+  static #saveDate = () => {
+    localStorage.setItem(
+      this.#NAME,
+      JSON.stringify({
+        list: this.#list,
+        count: this.#count,
+      }),
     )
-
-    postHeader.append(categoryList, dateSpan)
-
-    const infoParagraph = createElement(
-      'p',
-      'post__info',
-      postData.info,
-    )
-
-    post.append(postHeader, infoParagraph)
-
-    postList.append(post)
-  })
-
-  return postList
+  }
 }
 
-const post = createPost()
-page.append(post)
+Todo.init()
+
+window.todo = Todo

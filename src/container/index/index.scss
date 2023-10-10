@@ -1,78 +1,93 @@
 .page {
   padding: 24px;
-  max-width: 400px;
+  max-width: 720px;
   margin: 0 auto;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 17px 0px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  header {
-    display: flex;
-    justify-content: space-between;
-  }
+  gap: 24px;
+}
 
-  .button {
+.title {
+  font-size: 24px;
+  color: #212529;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 5fr 1fr;
+  gap: 12px;
+
+  &__button {
+    border-radius: 4px;
+    border: 1px solid #0d6efd;
+    background: #0d6efd;
+    color: #fff;
+    padding: 8px 16px;
     transition: opacity 0.7s;
-    cursor: pointer;
     &:hover {
-      opacity: 0.7;
+      opacity: 0.5;
     }
   }
-  .title {
-    font-size: 24px;
-    color: D#121212;
-  }
+  &__input {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    padding: 8px 16px;
+    color: #212529;
 
-  .post__list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .post {
-    padding: 12px;
-    border-radius: 10px;
-    background-color: #f7f7f7;
-    border: 1px solid #f7f7f7;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    &--viewed {
-      background-color: transparent;
-      border-color: #e6e6e6;
-      .post__info {
-        color: #888888;
-      }
+    &::placeholder {
+      color: #909294;
     }
   }
 }
 
-.post__header {
-  display: flex;
-  justify-content: space-between;
-}
-.post__category-list {
-  display: flex;
-  gap: 8px;
-}
-.post__date {
-  color: #888888;
-  font-size: 14px;
-}
-.post__info {
-  font-size: 16px;
-  line-height: 1 4em;
-  color: #121212;
-}
-.post__category {
-  padding: 8px 12px;
-  font-size: 12px;
-  border-radius: 50px;
-
-  &--1 {
-    color: #f46f17;
-    background-color: #f7e9e1;
+.task {
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
-  &--2 {
-    color: O#ef5da8;
-    background-color: #f6e8ef;
+  & {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #a3dee9;
+  }
+  &__number {
+    color: #212529;
+    font-size: 14px;
+  }
+  &__text {
+    transition: opacity 0.7s;
+    color: #212529;
+    font-size: 16px;
+  }
+  &--done &__text {
+    opacity: 0.5;
+    text-decoration: line-through;
+  }
+
+  &__button {
+    transition: opacity 0.7s;
+    height: 28px;
+    width: 28px;
+    background-size: cover;
+    &:hover {
+      opacity: 0.5;
+    }
+
+    &--do {
+      background-image: url('/svg/button_do.svg');
+    }
+    &--done {
+      background-image: url('/svg/button_done.svg');
+    }
+    &--cancel {
+      background-image: url('/svg/button_cancel.svg');
+    }
   }
 }

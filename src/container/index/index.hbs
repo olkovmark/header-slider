@@ -1,3 +1,24 @@
 <div class='page'>
-
+  <h1 class='title'>To-do list </h1>
+  <div class='form'>
+    <input
+      type='text'
+      class='form__input'
+      placeholder='Введіть задачу...'
+    />
+    <button class='form__button'>Додати</button>
+  </div>
+  <main class='task__list'></main>
 </div>
+
+<template id='task'>
+  <div class='task task'>
+    <span class='task__number'>1.</span>
+    <span id='id' class='task__text'>Some placeholder
+      content in a paragraph</span>
+    <button class='task__button task__button--do'>
+    </button>
+    <button class='task__button task__button--cancel'>
+    </button>
+  </div>
+</template>
